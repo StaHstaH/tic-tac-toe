@@ -64,3 +64,24 @@ footer div {
 .turn img {
     max-width:25%;
 }
+
+
+.clicked_x {
+    background-image: url("assets/icon-x-outline.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.clicked_o {
+    background-image: url("assets/icon-o-outline.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.turn_o .turn_image_x {
+    display: none;
+}
+
+.turn_x .turn_image_o {
+    display: none;
+}
