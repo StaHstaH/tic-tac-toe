@@ -36,76 +36,97 @@ function changeTurn() {
   }
 }
 
+// o o o _> o
+// o x o -> !
+// o _ x -> !
+// o _ o -> ?
+
+function checkValues(i0, i1, i2) {
+  // if (
+  //   gameBoard[i0] === gameBoard[i1] &&
+  //   gameBoard[i0] === gameBoard[i2] &&
+  //   gameBoard[i0] !== ""
+  // ){
+  //   return gameBoard[i0];
+  // }
+
+  let counter = { "x" : 0, "o" : 0};
+
+  
+  //if (gameBoard[i0] === "x") {
+  //  counter.x += 1;
+  //} else if (gameBoard[i0] == "o") {
+  //  counter.o += 1;
+  //}
+  counter[gameBoard[i0]] += 1;
+  
+  counter[gameBoard[i1]] += 1;
+  counter[gameBoard[i2]] += 1;
+
+
+  if (counter["x"] === 3) {
+    return "x";
+  } else if (counter["o"] === 3) {
+    return "o";
+  } else if (counter["x"] > 0 && counter["o"] > 0) {
+    return "!";
+  } else {
+    return "?"
+  }
+
+}
+
+
 function checkHorizontalLine(lineNumber) {
   let startIndex = lineNumber * boardWidth;
-  if (
-    gameBoard[startIndex] === gameBoard[startIndex + 1] &&
-    gameBoard[startIndex] === gameBoard[startIndex + 2] &&
-    gameBoard[startIndex] !== ""
-  ) {
-    return gameBoard[startIndex];
-  }
+  return checkValues(startIndex, startIndex + 1, startIndex + 2);
 }
 
 function checkVerticalLine(lineNumber) {
   let startIndex = lineNumber;
-
-  if (
-    gameBoard[startIndex] === gameBoard[startIndex + boardWidth] &&
-    gameBoard[startIndex] === gameBoard[startIndex + boardWidth * 2] &&
-    gameBoard[startIndex] !== ""
-  ) {
-    return gameBoard[startIndex];
-  }
+  return checkValues(startIndex, startIndex + boardWidth, startIndex + boardWidth * 2);
 }
 
 function checkLeftDiagonal() {
   let startIndex = 0;
-
-  if (
-    gameBoard[startIndex] === gameBoard[startIndex + boardWidth + 1] &&
-    gameBoard[startIndex] === gameBoard[startIndex + boardWidth * 2 + 2] &&
-    gameBoard[startIndex] !== ""
-  ) {
-    return gameBoard[startIndex];
-  }
+  return checkValues(startIndex, startIndex + boardWidth + 1, startIndex + boardWidth * 2 + 2);
 }
 
 function checkRightDiagonal() {
   let startIndex = 2;
-
-  if (
-    gameBoard[startIndex] === gameBoard[startIndex + boardWidth - 1] &&
-    gameBoard[startIndex] === gameBoard[startIndex + boardWidth * 2 - 2] &&
-    gameBoard[startIndex] !== ""
-  ) {
-    return gameBoard[startIndex];
-  }
+  return checkValues(startIndex, startIndex + boardWidth - 1, startIndex + boardWidth * 2 - 2);
 }
 
 function checkWinner() {
+  let counter = { x: 0, o: 0, "!" : 0, "?" : 0 };
   for (let i = 0; i < boardHeight; i++) {
     let result = checkHorizontalLine(i);
-    if (result === "x" || result === "o") {
-      return result;
-    }
+   counter[result] += 1;
   }
 
   for (let i = 0; i < boardWidth; i++) {
     let result = checkVerticalLine(i);
-    if (result === "x" || result === "o") {
-      return result;
-    }
+    counter[result] += 1;
   }
 
   let result = checkLeftDiagonal();
-  if (result === "x" || result === "o") {
-    return result;
-  }
+  counter[result] += 1;
 
   result = checkRightDiagonal();
-  if (result === "x" || result === "o") {
-    return result;
+  counter[result] += 1;
+
+  if (counter["x"] > 0) { 
+    return "x";
+  }
+
+  if (counter["o"] > 0) {
+    return "o";
+  }
+
+  if (counter["!"] === 8) {
+    return "!";
+  } else {
+    return "?";
   }
 }
 
@@ -139,7 +160,7 @@ for (var i = 0; i < boardElements.length; i++) {
     // Display the ID in the console
     console.log("Clicked item with ID: " + itemId);
     let result = checkWinner();
-    if (result === "x" || result === "o") {
+    if (result === "x" || result === "o" || result === "!") {
       handleResult(result);
     }
   });
@@ -164,16 +185,35 @@ function handleResult(result) {
   isGameOver = true;
   console.log(result + " wins!");
 
+let modal = document.getElementById("roundOverModal");
+modal.style.display = "block";
+
+let xWinsMessage = document.getElementById("x_wins");
+let oWinsMessage = document.getElementById("o_wins");
+let roundTied = document.getElementById("round_tied");
+
   if (result === "x") {
     let span = document.getElementById("x_score");
     xScore++;
     span.innerHTML = xScore;
+    xWinsMessage.style.display = "block";
+    oWinsMessage.style.display = "none";
+    roundTied.style.display = "none";
   } else if (result === "o") {
     let span = document.getElementById("o_score");
     oScore++;
     span.innerHTML = oScore;
+    xWinsMessage.style.display = "none";
+    oWinsMessage.style.display = "block";
+    roundTied.style.display = "none";
+  } else if (result === "!") {
+    let span = document.getElementById("ties");
+    ties++;
+    span.innerHTML = ties;
+    xWinsMessage.style.display = "none";
+    oWinsMessage.style.display = "none";
+    roundTied.style.display = "block";
   }
 
-  let modal = document.getElementById("roundOverModal");
-  modal.style.display = "block";
+  
 }
