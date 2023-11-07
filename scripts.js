@@ -6,12 +6,22 @@ let gameBoard = new Array();
 const boardWidth = 3;
 const boardHeight = 3;
 
-for (let i = 0; i < boardWidth * boardHeight; i++) {
-  gameBoard[i] = "";
-}
-
 let whoseTurn = "x";
 let isGameOver = false;
+
+function reset() {
+  for (let i = 0; i < boardWidth * boardHeight; i++) {
+    gameBoard[i] = "";
+  }
+  whoseTurn = "x";
+  isGameOver = false;
+
+  for (var i = 0; i < boardElements.length; i++) {
+    boardElements[i].classList.remove("clicked_x", "clicked_o");
+  }
+}
+
+reset();
 
 function changeTurn() {
   let turnIndicator = document.getElementById("turn");
@@ -130,9 +140,40 @@ for (var i = 0; i < boardElements.length; i++) {
     console.log("Clicked item with ID: " + itemId);
     let result = checkWinner();
     if (result === "x" || result === "o") {
-      
-        isGameOver = true;
-        console.log(result + " wins!");
+      handleResult(result);
     }
   });
+}
+
+let quitButton = document.getElementById("quit_button");
+let nextRoundButton = document.getElementById("next_button");
+
+quitButton.addEventListener("click", function () {});
+
+nextRoundButton.addEventListener("click", function () {
+  let modal = document.getElementById("roundOverModal");
+  modal.style.display = "none";
+  reset();
+});
+
+let xScore = 0;
+let ties = 0;
+let oScore = 0;
+
+function handleResult(result) {
+  isGameOver = true;
+  console.log(result + " wins!");
+
+  if (result === "x") {
+    let span = document.getElementById("x_score");
+    xScore++;
+    span.innerHTML = xScore;
+  } else if (result === "o") {
+    let span = document.getElementById("o_score");
+    oScore++;
+    span.innerHTML = oScore;
+  }
+
+  let modal = document.getElementById("roundOverModal");
+  modal.style.display = "block";
 }

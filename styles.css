@@ -5,43 +5,41 @@ body {
 }
 
 main {
-    width:35rem;
-    height:40rem;
-    background-color:#1A2A33;
+    width: 35rem;
+    height: 40rem;
+    background-color: #1A2A33;
 }
 
 header {
     text-align: center;
-    display:flex;
+    display: flex;
     justify-content: space-around;
     align-items: center;
-    padding-top:1rem;
-    padding-bottom:1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
-header img {
-
-}
+header img {}
 
 
 section {
-    display:grid;
+    display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
     gap: 20px 20px;
     padding: 2rem;
-    text-align:center;
+    text-align: center;
 }
 
 section div {
-    display:block;
-    width:8.75rem;
-    height:8.75rem;
+    display: block;
+    width: 8.75rem;
+    height: 8.75rem;
     background-color: #1F3641;
 }
 
 footer {
-    display:grid;
+    display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     column-gap: 20px;
     padding: 0 2rem;
@@ -51,18 +49,18 @@ footer div {
     display: block;
     width: 8.75rem;
     height: 2rem;
-    text-align:center;
+    text-align: center;
     background-color: #1F3641;
 }
 
 .turn {
-    display:flex;
+    display: flex;
     align-items: center;
-    background-color:#1F3641;
+    background-color: #1F3641;
 }
 
 .turn img {
-    max-width:25%;
+    max-width: 25%;
 }
 
 
@@ -84,4 +82,35 @@ footer div {
 
 .turn_x .turn_image_o {
     display: none;
+}
+
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    /* Could be more or less, depending on screen size */
 }
