@@ -9,6 +9,35 @@ const boardHeight = 3;
 let whoseTurn = "x";
 let isGameOver = false;
 
+let playerSymbol = "x";
+let cpuSymbol = "o";
+let vsCpu = true;
+
+document
+  .getElementById("select_player_x")
+  .addEventListener("click", function () {
+    playerSymbol = "x";
+    cpuSymbol = "o";
+  });
+
+document
+  .getElementById("select_player_o")
+  .addEventListener("click", function () {
+    playerSymbol = "o";
+    cpuSymbol = "x";
+  });
+
+function startNewGame() {
+  let startScreen = document.getElementById("start_screen");
+  let gameScreen = document.getElementById("game_screen");
+
+  startScreen.classList.add("hidden");
+  gameScreen.classList.remove("hidden");
+}
+
+document.getElementById("new_game_cpu").addEventListener("click", startNewGame);
+document.getElementById("new_game_human").addEventListener("click", startNewGame);
+
 function reset() {
   for (let i = 0; i < boardWidth * boardHeight; i++) {
     gameBoard[i] = "";
@@ -34,6 +63,10 @@ function changeTurn() {
     turnIndicator.classList.add("turn_x");
     turnIndicator.classList.remove("turn_o");
   }
+   
+  if(vsCpu && whoseTurn === cpuSymbol) {
+    setTimeout(skyNetTurn, 500);
+  }
 }
 
 // o o o _> o
@@ -50,19 +83,17 @@ function checkValues(i0, i1, i2) {
   //   return gameBoard[i0];
   // }
 
-  let counter = { "x" : 0, "o" : 0};
+  let counter = { x: 0, o: 0 };
 
-  
   //if (gameBoard[i0] === "x") {
   //  counter.x += 1;
   //} else if (gameBoard[i0] == "o") {
   //  counter.o += 1;
   //}
   counter[gameBoard[i0]] += 1;
-  
+
   counter[gameBoard[i1]] += 1;
   counter[gameBoard[i2]] += 1;
-
 
   if (counter["x"] === 3) {
     return "x";
@@ -71,11 +102,9 @@ function checkValues(i0, i1, i2) {
   } else if (counter["x"] > 0 && counter["o"] > 0) {
     return "!";
   } else {
-    return "?"
+    return "?";
   }
-
 }
-
 
 function checkHorizontalLine(lineNumber) {
   let startIndex = lineNumber * boardWidth;
@@ -84,24 +113,36 @@ function checkHorizontalLine(lineNumber) {
 
 function checkVerticalLine(lineNumber) {
   let startIndex = lineNumber;
-  return checkValues(startIndex, startIndex + boardWidth, startIndex + boardWidth * 2);
+  return checkValues(
+    startIndex,
+    startIndex + boardWidth,
+    startIndex + boardWidth * 2
+  );
 }
 
 function checkLeftDiagonal() {
   let startIndex = 0;
-  return checkValues(startIndex, startIndex + boardWidth + 1, startIndex + boardWidth * 2 + 2);
+  return checkValues(
+    startIndex,
+    startIndex + boardWidth + 1,
+    startIndex + boardWidth * 2 + 2
+  );
 }
 
 function checkRightDiagonal() {
   let startIndex = 2;
-  return checkValues(startIndex, startIndex + boardWidth - 1, startIndex + boardWidth * 2 - 2);
+  return checkValues(
+    startIndex,
+    startIndex + boardWidth - 1,
+    startIndex + boardWidth * 2 - 2
+  );
 }
 
 function checkWinner() {
-  let counter = { x: 0, o: 0, "!" : 0, "?" : 0 };
+  let counter = { x: 0, o: 0, "!": 0, "?": 0 };
   for (let i = 0; i < boardHeight; i++) {
     let result = checkHorizontalLine(i);
-   counter[result] += 1;
+    counter[result] += 1;
   }
 
   for (let i = 0; i < boardWidth; i++) {
@@ -115,7 +156,7 @@ function checkWinner() {
   result = checkRightDiagonal();
   counter[result] += 1;
 
-  if (counter["x"] > 0) { 
+  if (counter["x"] > 0) {
     return "x";
   }
 
@@ -130,6 +171,21 @@ function checkWinner() {
   }
 }
 
+
+function fillField(fieldIndex, symbol) {
+  gameBoard[fieldIndex] = symbol;
+  let element = boardElements[fieldIndex];
+  // Apply a specific class on click
+  if (symbol === "x") {
+    element.classList.add("clicked_x");
+    element.classList.remove("clicked_o");
+  } else {
+    element.classList.add("clicked_o");
+    element.classList.remove("clicked_x");
+  }
+
+
+}
 // Add an event listener to each <div> element
 for (var i = 0; i < boardElements.length; i++) {
   let index = i;
@@ -137,15 +193,7 @@ for (var i = 0; i < boardElements.length; i++) {
     if (gameBoard[index] !== "" || isGameOver) {
       return;
     }
-    gameBoard[index] = whoseTurn;
-    // Apply a specific class on click
-    if (whoseTurn === "x") {
-      this.classList.add("clicked_x");
-      this.classList.remove("clicked_o");
-    } else {
-      this.classList.add("clicked_o");
-      this.classList.remove("clicked_x");
-    }
+    fillField(index, whoseTurn);
 
     // Get the ID of the clicked <div> element
     var itemId = this.getAttribute("id");
@@ -185,12 +233,12 @@ function handleResult(result) {
   isGameOver = true;
   console.log(result + " wins!");
 
-let modal = document.getElementById("roundOverModal");
-modal.style.display = "block";
+  let modal = document.getElementById("roundOverModal");
+  modal.style.display = "block";
 
-let xWinsMessage = document.getElementById("x_wins");
-let oWinsMessage = document.getElementById("o_wins");
-let roundTied = document.getElementById("round_tied");
+  let xWinsMessage = document.getElementById("x_wins");
+  let oWinsMessage = document.getElementById("o_wins");
+  let roundTied = document.getElementById("round_tied");
 
   if (result === "x") {
     let span = document.getElementById("x_score");
@@ -214,6 +262,26 @@ let roundTied = document.getElementById("round_tied");
     oWinsMessage.style.display = "none";
     roundTied.style.display = "block";
   }
+}
 
-  
+
+function skyNetTurn() {
+  if(isGameOver) {
+    return;
+  }
+
+  let selectedIndex = -1;
+  for (let i = 0; i < boardWidth * boardHeight; i++) {
+    if(gameBoard[i] === '') {
+      selectedIndex = i;
+      break;
+    }
+  }
+ 
+  if(selectedIndex === -1) {
+    return;
+  }
+
+  fillField(selectedIndex, cpuSymbol);
+  changeTurn();
 }

@@ -1,4 +1,21 @@
+:root {
+    --silver: #A8BFC9;
+    --darknavy: #1A2A33;
+    --lightyellow: #F2B137;
+    --lightblue: #31C3BD;
+    ;
+}
+
 body {
+    color: var(--silver);
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    /* identical to box height */
+    text-align: center;
+    letter-spacing: 0.875px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,6 +25,16 @@ main {
     width: 35rem;
     height: 40rem;
     background-color: #1A2A33;
+}
+
+#start_screen {
+    width: 70%;
+    margin: 50% auto;
+}
+
+.player_select {
+    padding: 0.5rem 4rem;
+    font-size:1.5rem;
 }
 
 header {
@@ -22,7 +49,7 @@ header {
 header img {}
 
 
-section {
+#board {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
@@ -31,7 +58,7 @@ section {
     text-align: center;
 }
 
-section div {
+#board div {
     display: block;
     width: 8.75rem;
     height: 8.75rem;
@@ -113,4 +140,8 @@ footer div {
     border: 1px solid #888;
     width: 80%;
     /* Could be more or less, depending on screen size */
+}
+
+.hidden {
+    display: none;
 }
