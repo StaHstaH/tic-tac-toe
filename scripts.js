@@ -36,7 +36,9 @@ function startNewGame() {
 }
 
 document.getElementById("new_game_cpu").addEventListener("click", startNewGame);
-document.getElementById("new_game_human").addEventListener("click", startNewGame);
+document
+  .getElementById("new_game_human")
+  .addEventListener("click", startNewGame);
 
 function reset() {
   for (let i = 0; i < boardWidth * boardHeight; i++) {
@@ -63,8 +65,8 @@ function changeTurn() {
     turnIndicator.classList.add("turn_x");
     turnIndicator.classList.remove("turn_o");
   }
-   
-  if(vsCpu && whoseTurn === cpuSymbol) {
+
+  if (vsCpu && whoseTurn === cpuSymbol) {
     setTimeout(skyNetTurn, 500);
   }
 }
@@ -101,6 +103,10 @@ function checkValues(i0, i1, i2) {
     return "o";
   } else if (counter["x"] > 0 && counter["o"] > 0) {
     return "!";
+  } else if (counter["x"] > 0) {
+    return "x?";
+  } else if (counter["o"] > 0) {
+    return "o?";
   } else {
     return "?";
   }
@@ -171,7 +177,6 @@ function checkWinner() {
   }
 }
 
-
 function fillField(fieldIndex, symbol) {
   gameBoard[fieldIndex] = symbol;
   let element = boardElements[fieldIndex];
@@ -183,8 +188,10 @@ function fillField(fieldIndex, symbol) {
     element.classList.add("clicked_o");
     element.classList.remove("clicked_x");
   }
-
-
+  let result = checkWinner();
+  if (result === "x" || result === "o" || result === "!") {
+    handleResult(result);
+  }
 }
 // Add an event listener to each <div> element
 for (var i = 0; i < boardElements.length; i++) {
@@ -264,21 +271,78 @@ function handleResult(result) {
   }
 }
 
+function getLines() {
+  let lines = new Array();
+  for (let i = 0; i < boardHeight; i++) {
+    let startIndex = i * boardWidth;
+    lines.push([startIndex, startIndex + 1, startIndex + 2]);
+  }
+
+  for (let i = 0; i < boardWidth; i++) {
+    let startIndex = i;
+    lines.push([startIndex, startIndex + boardWidth, startIndex + boardWidth * 2]);
+  }
+
+  return lines;
+}
+
+function findEmpty(indeces) {
+  for (let i = 0; i < indeces.length; i++) {
+    let index = indeces[i];
+    if (gameBoard[index] === "") {
+      return index;
+    }
+  }
+  return -1;
+}
+
 
 function skyNetTurn() {
-  if(isGameOver) {
+  if (isGameOver) {
     return;
   }
 
   let selectedIndex = -1;
-  for (let i = 0; i < boardWidth * boardHeight; i++) {
-    if(gameBoard[i] === '') {
-      selectedIndex = i;
+
+  // for (let i = 0; i < boardHeight; i++) {
+  //   let result = checkHorizontalLine(i);
+  //   if (result === "?" || result === "o?") {
+  //     let startIndex = i * boardWidth;
+  //     selectedIndex = findEmpty([startIndex, startIndex + 1, startIndex + 2]);
+  //     break;
+  //   }
+  // }
+
+  // for (let i = 0; i < boardWidth; i++) {
+  //   let result = checkVerticalLine(i);
+  //   if (result === "?" || result === "o?") {
+  //     let startIndex = i * boardWidth;
+  //     selectedIndex = findEmpty([startIndex, startIndex + boardWidth, startIndex + boardWidth * 2,
+  //     ]);
+  //     break;
+  //   }
+  // }
+
+  let lines = getLines();
+
+  for (const line of lines) {
+    let result = checkValues(line[0], line[1], line[2]);
+    if (result === "?" || result === "o?") {
+      selectedIndex = findEmpty(line);
       break;
     }
   }
- 
-  if(selectedIndex === -1) {
+
+  if (selectedIndex === -1) {
+    for (let i = 0; i < boardWidth * boardHeight; i++) {
+      if (gameBoard[i] === "") {
+        selectedIndex = i;
+        break;
+      }
+    }
+  }
+
+  if (selectedIndex === -1) {
     return;
   }
 
