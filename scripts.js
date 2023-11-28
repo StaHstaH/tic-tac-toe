@@ -283,7 +283,15 @@ function getLines() {
     lines.push([startIndex, startIndex + boardWidth, startIndex + boardWidth * 2]);
   }
 
-  return lines;
+  let startIndex = 0;
+  lines.push([startIndex, startIndex + boardWidth + 1, startIndex + boardWidth * 2 + 2]);
+
+  startIndex = 2;
+  lines.push([startIndex, startIndex + boardWidth - 1, startIndex + boardWidth * 2 - 2]);
+
+  const shuffledLines = lines.sort((_a, _b) => 0.5 - Math.random());
+
+  return shuffledLines;
 }
 
 function findEmpty(indeces) {
@@ -296,6 +304,17 @@ function findEmpty(indeces) {
   return -1;
 }
 
+function countSymbols(indeces, symbol) {
+  let howManySymbols = 0;
+  for (let i = 0; i < indeces.length; i++) {
+    let index = indeces[i];
+    if (gameBoard[index] === symbol) {
+      howManySymbols = howManySymbols + 1;
+    }
+  }
+  return howManySymbols;
+}
+
 
 function skyNetTurn() {
   if (isGameOver) {
@@ -304,32 +323,24 @@ function skyNetTurn() {
 
   let selectedIndex = -1;
 
-  // for (let i = 0; i < boardHeight; i++) {
-  //   let result = checkHorizontalLine(i);
-  //   if (result === "?" || result === "o?") {
-  //     let startIndex = i * boardWidth;
-  //     selectedIndex = findEmpty([startIndex, startIndex + 1, startIndex + 2]);
-  //     break;
-  //   }
-  // }
-
-  // for (let i = 0; i < boardWidth; i++) {
-  //   let result = checkVerticalLine(i);
-  //   if (result === "?" || result === "o?") {
-  //     let startIndex = i * boardWidth;
-  //     selectedIndex = findEmpty([startIndex, startIndex + boardWidth, startIndex + boardWidth * 2,
-  //     ]);
-  //     break;
-  //   }
-  // }
 
   let lines = getLines();
 
   for (const line of lines) {
-    let result = checkValues(line[0], line[1], line[2]);
-    if (result === "?" || result === "o?") {
+    let result = countSymbols(line, "x");
+    if (result === 2) {
       selectedIndex = findEmpty(line);
       break;
+    }
+  }
+
+  if (selectedIndex === -1) {
+    for (const line of lines) {
+      let result = checkValues(line[0], line[1], line[2]);
+      if (result === "?" || result === "o?") {
+        selectedIndex = findEmpty(line);
+        break;
+      }
     }
   }
 
