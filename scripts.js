@@ -13,6 +13,11 @@ let playerSymbol = "x";
 let cpuSymbol = "o";
 let vsCpu = true;
 
+
+let xScore = 0;
+let ties = 0;
+let oScore = 0;
+
 document
   .getElementById("select_player_x")
   .addEventListener("click", function () {
@@ -44,6 +49,22 @@ document.getElementById("new_game_human").addEventListener("click", () => {
   vsCpu = false;
 });
 
+function setScore(symbol, value) {
+  let span;
+  if(symbol === "x") {
+    span = document.getElementById("x_score");
+    xScore = value;
+  } else if(symbol === "o") {
+    span = document.getElementById("o_score");
+    oScore = value;
+  }else {
+    span = document.getElementById("ties");
+    ties = value;
+  }
+  span.innerHTML = value;
+
+}
+
 function reset() {
   for (let i = 0; i < boardWidth * boardHeight; i++) {
     gameBoard[i] = "";
@@ -54,9 +75,26 @@ function reset() {
   for (var i = 0; i < boardElements.length; i++) {
     boardElements[i].classList.remove("clicked_x", "clicked_o");
   }
+  
+}
+
+function restart() {
+  let startScreen = document.getElementById("start_screen");
+  let gameScreen = document.getElementById("game_screen");
+
+  startScreen.classList.remove("hidden");
+  gameScreen.classList.add("hidden");
+
+  reset();
+  setScore("x", 0);
+  setScore("o", 0);
+  setScore("!", 0);
 }
 
 reset();
+
+
+document.getElementById("reset").addEventListener("click", restart);
 
 function changeTurn() {
   let turnIndicator = document.getElementById("turn");
@@ -129,6 +167,7 @@ function checkRightDiagonal() {
   );
 }
 
+// bug: +2 score for the human round
 function checkWinner() {
   let counter = { x: 0, o: 0, "!": 0, "?": 0 };
   for (let i = 0; i < boardHeight; i++) {
@@ -217,10 +256,6 @@ nextRoundButton.addEventListener("click", function () {
   reset();
 });
 
-let xScore = 0;
-let ties = 0;
-let oScore = 0;
-
 function handleResult(result) {
   isGameOver = true;
   console.log(result + " wins!");
@@ -233,23 +268,17 @@ function handleResult(result) {
   let roundTied = document.getElementById("round_tied");
 
   if (result === "x") {
-    let span = document.getElementById("x_score");
-    xScore++;
-    span.innerHTML = xScore;
+    setScore("x", xScore + 1);
     xWinsMessage.style.display = "block";
     oWinsMessage.style.display = "none";
     roundTied.style.display = "none";
   } else if (result === "o") {
-    let span = document.getElementById("o_score");
-    oScore++;
-    span.innerHTML = oScore;
+  setScore("o", oScore + 1);
     xWinsMessage.style.display = "none";
     oWinsMessage.style.display = "block";
     roundTied.style.display = "none";
   } else if (result === "!") {
-    let span = document.getElementById("ties");
-    ties++;
-    span.innerHTML = ties;
+    setScore("!", ties + 1);
     xWinsMessage.style.display = "none";
     oWinsMessage.style.display = "none";
     roundTied.style.display = "block";

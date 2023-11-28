@@ -46,9 +46,6 @@ header {
     padding-bottom: 1rem;
 }
 
-header img {}
-
-
 #board {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
