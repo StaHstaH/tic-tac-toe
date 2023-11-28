@@ -35,10 +35,14 @@ function startNewGame() {
   gameScreen.classList.remove("hidden");
 }
 
-document.getElementById("new_game_cpu").addEventListener("click", startNewGame);
-document
-  .getElementById("new_game_human")
-  .addEventListener("click", startNewGame);
+document.getElementById("new_game_cpu").addEventListener("click", () => {
+  startNewGame();
+  vsCpu = true;
+});
+document.getElementById("new_game_human").addEventListener("click", () => {
+  startNewGame();
+  vsCpu = false;
+});
 
 function reset() {
   for (let i = 0; i < boardWidth * boardHeight; i++) {
@@ -71,29 +75,10 @@ function changeTurn() {
   }
 }
 
-// o o o _> o
-// o x o -> !
-// o _ x -> !
-// o _ o -> ?
-
 function checkValues(i0, i1, i2) {
-  // if (
-  //   gameBoard[i0] === gameBoard[i1] &&
-  //   gameBoard[i0] === gameBoard[i2] &&
-  //   gameBoard[i0] !== ""
-  // ){
-  //   return gameBoard[i0];
-  // }
-
   let counter = { x: 0, o: 0 };
 
-  //if (gameBoard[i0] === "x") {
-  //  counter.x += 1;
-  //} else if (gameBoard[i0] == "o") {
-  //  counter.o += 1;
-  //}
   counter[gameBoard[i0]] += 1;
-
   counter[gameBoard[i1]] += 1;
   counter[gameBoard[i2]] += 1;
 
@@ -280,14 +265,26 @@ function getLines() {
 
   for (let i = 0; i < boardWidth; i++) {
     let startIndex = i;
-    lines.push([startIndex, startIndex + boardWidth, startIndex + boardWidth * 2]);
+    lines.push([
+      startIndex,
+      startIndex + boardWidth,
+      startIndex + boardWidth * 2,
+    ]);
   }
 
   let startIndex = 0;
-  lines.push([startIndex, startIndex + boardWidth + 1, startIndex + boardWidth * 2 + 2]);
+  lines.push([
+    startIndex,
+    startIndex + boardWidth + 1,
+    startIndex + boardWidth * 2 + 2,
+  ]);
 
   startIndex = 2;
-  lines.push([startIndex, startIndex + boardWidth - 1, startIndex + boardWidth * 2 - 2]);
+  lines.push([
+    startIndex,
+    startIndex + boardWidth - 1,
+    startIndex + boardWidth * 2 - 2,
+  ]);
 
   const shuffledLines = lines.sort((_a, _b) => 0.5 - Math.random());
 
@@ -315,14 +312,12 @@ function countSymbols(indeces, symbol) {
   return howManySymbols;
 }
 
-
 function skyNetTurn() {
   if (isGameOver) {
     return;
   }
 
   let selectedIndex = -1;
-
 
   let lines = getLines();
 
