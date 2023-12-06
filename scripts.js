@@ -81,7 +81,21 @@ function clearBoard() {
 clearBoard();
 
 
-document.getElementById("reset").addEventListener("click", clearBoard);
+document.getElementById("reset").addEventListener("click", function() {
+    let modal = document.getElementById("resetModal");
+    modal.style.display = "block";
+});
+
+document.getElementById("cancel").addEventListener("click", function(){
+  let modal = document.getElementById("resetModal");
+  modal.style.display = "none";
+});
+
+document.getElementById("restart").addEventListener("click", function () {
+  let modal = document.getElementById("resetModal");
+  modal.style.display = "none";
+  clearBoard();
+});
 
 function changeTurn() {
   let turnIndicator = document.getElementById("turn");
