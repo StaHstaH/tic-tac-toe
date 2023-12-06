@@ -65,7 +65,7 @@ function setScore(symbol, value) {
 
 }
 
-function reset() {
+function clearBoard() {
   for (let i = 0; i < boardWidth * boardHeight; i++) {
     gameBoard[i] = "";
   }
@@ -78,23 +78,10 @@ function reset() {
   
 }
 
-function restart() {
-  let startScreen = document.getElementById("start_screen");
-  let gameScreen = document.getElementById("game_screen");
-
-  startScreen.classList.remove("hidden");
-  gameScreen.classList.add("hidden");
-
-  reset();
-  setScore("x", 0);
-  setScore("o", 0);
-  setScore("!", 0);
-}
-
-reset();
+clearBoard();
 
 
-document.getElementById("reset").addEventListener("click", restart);
+document.getElementById("reset").addEventListener("click", clearBoard);
 
 function changeTurn() {
   let turnIndicator = document.getElementById("turn");
@@ -253,7 +240,7 @@ quitButton.addEventListener("click", function () {});
 nextRoundButton.addEventListener("click", function () {
   let modal = document.getElementById("roundOverModal");
   modal.style.display = "none";
-  reset();
+  clearBoard();
 });
 
 function handleResult(result) {
