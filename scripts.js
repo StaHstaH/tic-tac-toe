@@ -7,6 +7,7 @@ const boardWidth = 3;
 const boardHeight = 3;
 
 let whoseTurn = "x";
+let startingSymbol = "x";
 let isGameOver = false;
 
 let playerSymbol = "x";
@@ -35,17 +36,19 @@ function startNewGame() {
   startScreen.classList.add("hidden");
   gameScreen.classList.remove("hidden");
 
-  if(cpuSymbol === "x") {
+  if(cpuSymbol === startingSymbol) {
     skyNetTurn();
   }
 }
 
 document.getElementById("new_game_cpu").addEventListener("click", () => {
   startNewGame();
+  startingSymbol = "x";
   vsCpu = true;
 });
 document.getElementById("new_game_human").addEventListener("click", () => {
   startNewGame();
+  startingSymbol = "x";
   vsCpu = false;
 });
 
@@ -69,7 +72,7 @@ function clearBoard() {
   for (let i = 0; i < boardWidth * boardHeight; i++) {
     gameBoard[i] = "";
   }
-  whoseTurn = "x";
+  whoseTurn = startingSymbol;
   isGameOver = false;
 
   for (var i = 0; i < boardElements.length; i++) {
@@ -264,7 +267,15 @@ quitButton.addEventListener("click", function () {
 nextRoundButton.addEventListener("click", function () {
   let modal = document.getElementById("roundOverModal");
   modal.style.display = "none";
+  if(startingSymbol === "x") {
+    startingSymbol = "o";
+  } else {
+    startingSymbol = "x";
+  }
   clearBoard();
+  if (cpuSymbol === startingSymbol) {
+    skyNetTurn();
+  }
 });
 
 function handleResult(result) {
