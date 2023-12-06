@@ -18,16 +18,12 @@ let xScore = 0;
 let ties = 0;
 let oScore = 0;
 
-document
-  .getElementById("select_player_x")
-  .addEventListener("click", function () {
+document.getElementById("select_player_x").addEventListener("click", function () {
     playerSymbol = "x";
     cpuSymbol = "o";
   });
 
-document
-  .getElementById("select_player_o")
-  .addEventListener("click", function () {
+document.getElementById("select_player_o").addEventListener("click", function () {
     playerSymbol = "o";
     cpuSymbol = "x";
   });
@@ -38,6 +34,10 @@ function startNewGame() {
 
   startScreen.classList.add("hidden");
   gameScreen.classList.remove("hidden");
+
+  if(cpuSymbol === "x") {
+    skyNetTurn();
+  }
 }
 
 document.getElementById("new_game_cpu").addEventListener("click", () => {
@@ -231,7 +231,21 @@ for (var i = 0; i < boardElements.length; i++) {
 let quitButton = document.getElementById("quit_button");
 let nextRoundButton = document.getElementById("next_button");
 
-quitButton.addEventListener("click", function () {});
+quitButton.addEventListener("click", function () {
+  let startScreen = document.getElementById("start_screen");
+  let gameScreen = document.getElementById("game_screen");
+
+  startScreen.classList.remove("hidden");
+  gameScreen.classList.add("hidden");
+
+  let modal = document.getElementById("roundOverModal");
+  modal.style.display = "none";
+
+  clearBoard();
+  setScore("x", 0);
+  setScore("o", 0);
+  setScore("!", 0);
+});
 
 nextRoundButton.addEventListener("click", function () {
   let modal = document.getElementById("roundOverModal");
@@ -334,7 +348,7 @@ function skyNetTurn() {
   let lines = getLines();
 
   for (const line of lines) {
-    let result = countSymbols(line, "x");
+    let result = countSymbols(line, playerSymbol);
     if (result === 2) {
       selectedIndex = findEmpty(line);
       break;
@@ -344,7 +358,7 @@ function skyNetTurn() {
   if (selectedIndex === -1) {
     for (const line of lines) {
       let result = checkValues(line[0], line[1], line[2]);
-      if (result === "?" || result === "o?") {
+      if (result === "?" || result === cpuSymbol + "?") {
         selectedIndex = findEmpty(line);
         break;
       }
