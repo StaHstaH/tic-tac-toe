@@ -225,10 +225,6 @@ for (var i = 0; i < boardElements.length; i++) {
     changeTurn();
     // Display the ID in the console
     console.log("Clicked item with ID: " + itemId);
-    let result = checkWinner();
-    if (result === "x" || result === "o" || result === "!") {
-      handleResult(result);
-    }
   });
 }
 
