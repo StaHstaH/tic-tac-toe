@@ -1,9 +1,12 @@
 :root {
-    --silver: #A8BFC9;
-    --darknavy: #1A2A33;
-    --lightyellow: #F2B137;
-    --lightblue: #31C3BD;
-    ;
+    --darknavy: hsl(202,32%,15%);
+    --semidarknavy: hsl(199,35%,19%);
+    --silver: hsl(198,23%,72%);
+    --silverhover: hsl(197,33%,89%);
+    --lightblue: hsl(178°,60%,48%);
+    --lightbluehover: hsl(178,75%,65%);
+    --lightyellow: hsl(39,88%,58%);
+    --lightyellowhover: hsl(39,100%,69%);
 }
 
 body {
