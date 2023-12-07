@@ -6,19 +6,24 @@
     <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="reset.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <main>
         <section id="start_screen">
-            <div class="turn" id="turn"><img  src="assets/icon-x.svg" /><img src="assets/icon-o.svg" /></div>
+            <div class="turn" id="turn"><img id="x_symbol"  src="assets/icon-x.svg" /><img id="o_symbol" src="assets/icon-o.svg" /></div>
             <div id="menu">
-                <h6>pick player 1's mark</h6>
-                <button id="select_player_x" class="player_select">x</button>
-                <button id="select_player_o" class="player_select">o</button>
+                <h4>pick player 1's mark</h4>
+                <!-- <div id="selectplayer"> -->
+                <button id="select_player_x" class="player_select"><img src="assets/icon-x.svg"></button>
+                <button id="select_player_o" class="player_select"><img src="assets/icon-o.svg"></button>
+                <!-- </div> -->
                 <p>remember: x goes first</p>
             </div>
-            <button id="new_game_cpu" class="player_select">New Game (vs CPU)</button>
-            <button id="new_game_human" class="player_select">New Game (VS PLAYER)</button>
+            <button id="new_game_cpu" class="player_select"><h3>New Game (vs CPU)</h3></button>
+            <button id="new_game_human" class="player_select"><h3>New Game (VS PLAYER)</h3></button>
         </section>
         <section id="game_screen" class="hidden">
         <header>

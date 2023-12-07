@@ -3,7 +3,7 @@
     --semidarknavy: hsl(199,35%,19%);
     --silver: hsl(198,23%,72%);
     --silverhover: hsl(197,33%,89%);
-    --lightblue: hsl(178°,60%,48%);
+    --lightblue: hsl(178,60%,48%);
     --lightbluehover: hsl(178,75%,65%);
     --lightyellow: hsl(39,88%,58%);
     --lightyellowhover: hsl(39,100%,69%);
@@ -11,33 +11,138 @@
 
 body {
     color: var(--silver);
-    font-family: 'Outfit';
+    font-family: 'Outfit', sans-serif;
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
-    line-height: 18px;
+    font-kerning: 1rem;
+    line-height: 1.3rem;
     /* identical to box height */
     text-align: center;
-    letter-spacing: 0.875px;
-    display: flex;
+    letter-spacing: 0.06rem;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+}
+
+main {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--darknavy);
+    overflow:hidden;
+    display:flex;
     justify-content: center;
     align-items: center;
 }
 
-main {
-    width: 35rem;
-    height: 40rem;
-    background-color: #1A2A33;
+h1, h2, h3, h4 {
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--darknavy);
+}
+
+h1{
+    font-size: 2.85rem;
+    font-kerning: 0.18rem;
+}
+
+h2{
+    font-size: 1.7rem;
+    font-kerning: 1.07rem;
+}
+
+h3{
+    font-size: 1.4rem;
+    font-kerning: 0.09rem;
+}
+
+h4 {
+    font-size: 1.14rem;
+    font-kerning: 0.07rem;
+    color: var(--silver);
+    padding-bottom: 1rem;
+}
+
+#menu {
+    margin: 1.5rem 0 2.85rem 0;
+    background-color: var(--semidarknavy);
+    border:none;
+    border-radius: 1.07rem;
+    padding: 1.2rem 4.5rem;
+}
+
+#menu button {
+    margin-bottom: 1rem;
+    background-color: var(--darknavy);
+}
+
+#menu p {
+    color: var(--silver);
+    mix-blend-mode: normal;
+    opacity: 0.5;
+    text-transform: uppercase;
+}
+
+#selectplayer {
+    background-color: var(--darknavy);
 }
 
 #start_screen {
-    width: 70%;
+    width: 100%;
     margin: 50% auto;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.turn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--darknavy);
+}
+
+.turn img {
+   width: 1.5rem;
+   margin: 0.5rem 0.26rem;
+
+}
+
+button:hover {
+    cursor: pointer;
 }
 
 .player_select {
-    padding: 0.5rem 4rem;
-    font-size:1.5rem;
+    border: none;
+    border-radius: 1.07rem;
+    padding: 1.07rem 5.7rem;
+}
+
+#select_player_x, #select_player_o {
+    background-color: var(--semidarknavy);
+}
+
+#new_game_cpu, #new_game_cpu:hover, #new_game_human, #new_game_human:hover {
+    width: 32.9rem;
+    padding: 1rem 7rem;
+}
+
+#new_game_cpu {
+    background-color: var(--lightyellow);
+    margin-bottom: 1.42rem;
+}
+
+#new_game_cpu:hover {
+    background-color: var(--lightyellowhover);
+}
+
+#new_game_human {
+    background-color: var(--lightblue);
+}
+
+#new_game_human:hover {
+    background-color: var(--lightbluehover);
 }
 
 header {
@@ -68,7 +173,7 @@ header {
 footer {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    column-gap: 20px;
+    column-gap: 1.4rem;
     padding: 0 2rem;
 }
 
@@ -78,16 +183,6 @@ footer div {
     height: 2rem;
     text-align: center;
     background-color: #1F3641;
-}
-
-.turn {
-    display: flex;
-    align-items: center;
-    background-color: #1F3641;
-}
-
-.turn img {
-    max-width: 25%;
 }
 
 
@@ -136,7 +231,7 @@ footer div {
     background-color: #fefefe;
     margin: 15% auto;
     /* 15% from the top and centered */
-    padding: 20px;
+    padding: 1.4rem;
     border: 1px solid #888;
     width: 80%;
     /* Could be more or less, depending on screen size */
