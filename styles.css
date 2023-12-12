@@ -69,7 +69,8 @@ h4 {
     border:none;
     border-radius: 1.07rem;
     padding: 1.2rem 4.5rem;
-}
+    box-shadow: inset 0px -8px 0px 0px rgba(16, 33, 42, 1);
+    }
 
 #menu button {
     margin-bottom: 1rem;
@@ -126,19 +127,23 @@ button:hover {
 #new_game_cpu, #new_game_cpu:hover, #new_game_human, #new_game_human:hover {
     width: 32.9rem;
     padding: 1rem 7rem;
+
 }
 
 #new_game_cpu {
     background-color: var(--lightyellow);
     margin-bottom: 1.42rem;
+    box-shadow: inset 0px -8px 0px 0px rgba(204, 139, 19, 1);
 }
 
 #new_game_cpu:hover {
     background-color: var(--lightyellowhover);
+    box-shadow: inset 0px -8px 0px 0px rgba(204, 139, 19, 1);
 }
 
 #new_game_human {
     background-color: var(--lightblue);
+    box-shadow: inset 0px -8px 0px 0px rgba(17, 140, 135, 1);
 }
 
 #new_game_human:hover {
