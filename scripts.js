@@ -1,95 +1,309 @@
 let board = document.getElementById("board");
 let boardElements = board.getElementsByTagName("div");
 
-let gameBoard = new Array();
-
 const boardWidth = 3;
 const boardHeight = 3;
 
-let whoseTurn = "x";
-let startingSymbol = "x";
-let isGameOver = false;
+class TicTacToe {
+  constructor() {
+    this.gameBoard = new Array();
 
-let playerSymbol = "x";
-let cpuSymbol = "o";
-let vsCpu = true;
+    this.whoseTurn = "x";
+    this.startingSymbol = "x";
+    this.isGameOver = false;
 
+    this.playerSymbol = "x";
+    this.cpuSymbol = "o";
+    this.vsCpu = true;
 
-let xScore = 0;
-let ties = 0;
-let oScore = 0;
+    this.xScore = 0;
+    this.ties = 0;
+    this.oScore = 0;
+  }
 
-document.getElementById("select_player_x").addEventListener("click", function () {
-    playerSymbol = "x";
-    cpuSymbol = "o";
+  setPlayerSymbol(playerSymbol) {
+    this.playerSymbol = playerSymbol;
+    if (playerSymbol === "x") {
+      this.cpuSymbol = "o";
+    } else {
+      this.cpuSymbol = "x";
+    }
+  }
+
+  isCpuStarting() {
+    return this.cpuSymbol === this.startingSymbol;
+  }
+
+  enableAiPlayer(vsCpu) {
+    this.vsCpu = vsCpu;
+  }
+
+  isTheFieldEmpty(index) {
+    return this.gameBoard[index] !== "" || this.isGameOver;
+  }
+
+  clearBoard() {
+    for (let i = 0; i < boardWidth * boardHeight; i++) {
+      this.gameBoard[i] = "";
+    }
+    this.whoseTurn = this.startingSymbol;
+    this.isGameOver = false;
+
+    for (var i = 0; i < boardElements.length; i++) {
+      boardElements[i].classList.remove("clicked_x", "clicked_o");
+    }
+  }
+
+  changeTurn() {
+    let turnIndicator = document.getElementById("turn");
+    if (this.whoseTurn === "x") {
+      this.whoseTurn = "o";
+      turnIndicator.classList.add("turn_o");
+      turnIndicator.classList.remove("turn_x");
+    } else {
+      this.whoseTurn = "x";
+      turnIndicator.classList.add("turn_x");
+      turnIndicator.classList.remove("turn_o");
+    }
+
+    if (this.vsCpu && this.whoseTurn === this.cpuSymbol) {
+      setTimeout(() => {
+        this.skyNetTurn();
+      }, 500);
+    }
+  }
+
+  checkValues(i0, i1, i2) {
+    let counter = { x: 0, o: 0 };
+
+    counter[this.gameBoard[i0]] += 1;
+    counter[this.gameBoard[i1]] += 1;
+    counter[this.gameBoard[i2]] += 1;
+
+    if (counter["x"] === 3) {
+      return "x";
+    } else if (counter["o"] === 3) {
+      return "o";
+    } else if (counter["x"] > 0 && counter["o"] > 0) {
+      return "!";
+    } else if (counter["x"] > 0) {
+      return "x?";
+    } else if (counter["o"] > 0) {
+      return "o?";
+    } else {
+      return "?";
+    }
+  }
+
+  checkWinner() {
+    let lines = this.getLines();
+    let tieCount = 0;
+
+    for (const line of lines) {
+      let resultO = this.countSymbols(line, "o");
+      if (resultO === 3) {
+        return "o";
+      }
+      let resultX = this.countSymbols(line, "x");
+      if (resultX === 3) {
+        return "x";
+      }
+      if (resultO > 0 && resultX > 0) {
+        tieCount++;
+      }
+    }
+
+    if (lines.length === tieCount) {
+      return "!";
+    } else {
+      return "?";
+    }
+  }
+
+  placeCurrentSymbol(index) {
+    this.fillField(index, this.whoseTurn);
+  }
+
+  fillField(fieldIndex, symbol) {
+    this.gameBoard[fieldIndex] = symbol;
+    let element = boardElements[fieldIndex];
+    // Apply a specific class on click
+    if (symbol === "x") {
+      element.classList.add("clicked_x");
+      element.classList.remove("clicked_o");
+    } else {
+      element.classList.add("clicked_o");
+      element.classList.remove("clicked_x");
+    }
+    let result = this.checkWinner();
+    if (result === "x" || result === "o" || result === "!") {
+      handleResult(result);
+    }
+  }
+
+  getLines() {
+    let lines = new Array();
+    for (let i = 0; i < boardHeight; i++) {
+      let startIndex = i * boardWidth;
+      lines.push([startIndex, startIndex + 1, startIndex + 2]);
+    }
+
+    for (let i = 0; i < boardWidth; i++) {
+      let startIndex = i;
+      lines.push([
+        startIndex,
+        startIndex + boardWidth,
+        startIndex + boardWidth * 2,
+      ]);
+    }
+
+    let startIndex = 0;
+    lines.push([
+      startIndex,
+      startIndex + boardWidth + 1,
+      startIndex + boardWidth * 2 + 2,
+    ]);
+
+    startIndex = 2;
+    lines.push([
+      startIndex,
+      startIndex + boardWidth - 1,
+      startIndex + boardWidth * 2 - 2,
+    ]);
+
+    const shuffledLines = lines.sort((_a, _b) => 0.5 - Math.random());
+
+    return shuffledLines;
+  }
+
+  findEmpty(indeces) {
+    for (let i = 0; i < indeces.length; i++) {
+      let index = indeces[i];
+      if (this.gameBoard[index] === "") {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  countSymbols(indeces, symbol) {
+    let howManySymbols = 0;
+    for (let i = 0; i < indeces.length; i++) {
+      let index = indeces[i];
+      if (this.gameBoard[index] === symbol) {
+        howManySymbols = howManySymbols + 1;
+      }
+    }
+    return howManySymbols;
+  }
+
+  setScore(symbol, value) {
+    let span;
+    if (symbol === "x") {
+      span = document.getElementById("x_score");
+      this.xScore = value;
+    } else if (symbol === "o") {
+      span = document.getElementById("o_score");
+      this.oScore = value;
+    } else {
+      span = document.getElementById("ties");
+      this.ties = value;
+    }
+    span.innerHTML = value;
+  }
+
+  skyNetTurn() {
+    if (this.isGameOver) {
+      return;
+    }
+
+    let selectedIndex = -1;
+
+    let lines = this.getLines();
+
+    for (const line of lines) {
+      let result = this.countSymbols(line, this.playerSymbol);
+      if (result === 2) {
+        selectedIndex = this.findEmpty(line);
+        break;
+      }
+    }
+
+    if (selectedIndex === -1) {
+      for (const line of lines) {
+        let result = this.checkValues(line[0], line[1], line[2]);
+        if (result === "?" || result === this.cpuSymbol + "?") {
+          selectedIndex = this.findEmpty(line);
+          break;
+        }
+      }
+    }
+
+    if (selectedIndex === -1) {
+      for (let i = 0; i < boardWidth * boardHeight; i++) {
+        if (this.gameBoard[i] === "") {
+          selectedIndex = i;
+          break;
+        }
+      }
+    }
+
+    if (selectedIndex === -1) {
+      return;
+    }
+
+    this.fillField(selectedIndex, this.cpuSymbol);
+    this.changeTurn();
+  }
+}
+
+let ticTacToe = new TicTacToe();
+
+document
+  .getElementById("select_player_x")
+  .addEventListener("click", function () {
+    ticTacToe.setPlayerSymbol('x');
   });
 
-document.getElementById("select_player_o").addEventListener("click", function () {
-    playerSymbol = "o";
-    cpuSymbol = "x";
+document
+  .getElementById("select_player_o")
+  .addEventListener("click", function () {
+    ticTacToe.setPlayerSymbol("o");
   });
 
 function startNewGame() {
   let startScreen = document.getElementById("start_screen");
   let gameScreen = document.getElementById("game_screen");
 
-  startScreen.classList.add("hidden");
-  gameScreen.classList.remove("hidden");
+  // startScreen.classList.add("hidden");
+  // gameScreen.classList.remove("hidden");
 
-  if(cpuSymbol === startingSymbol) {
-    skyNetTurn();
+  startScreen.style.display = "none";
+  gameScreen.style.display = "unset";
+
+  if (ticTacToe.isCpuStarting()) {
+    ticTacToe.skyNetTurn();
   }
 }
 
 document.getElementById("new_game_cpu").addEventListener("click", () => {
   startNewGame();
-  startingSymbol = "x";
-  vsCpu = true;
+  ticTacToe.enableAiPlayer(true);
 });
 document.getElementById("new_game_human").addEventListener("click", () => {
   startNewGame();
-  startingSymbol = "x";
-  vsCpu = false;
+  ticTacToe.enableAiPlayer(false);
 });
 
-function setScore(symbol, value) {
-  let span;
-  if(symbol === "x") {
-    span = document.getElementById("x_score");
-    xScore = value;
-  } else if(symbol === "o") {
-    span = document.getElementById("o_score");
-    oScore = value;
-  }else {
-    span = document.getElementById("ties");
-    ties = value;
-  }
-  span.innerHTML = value;
 
-}
+ticTacToe.clearBoard();
 
-function clearBoard() {
-  for (let i = 0; i < boardWidth * boardHeight; i++) {
-    gameBoard[i] = "";
-  }
-  whoseTurn = startingSymbol;
-  isGameOver = false;
-
-  for (var i = 0; i < boardElements.length; i++) {
-    boardElements[i].classList.remove("clicked_x", "clicked_o");
-  }
-  
-}
-
-clearBoard();
-
-
-document.getElementById("reset").addEventListener("click", function() {
-    let modal = document.getElementById("resetModal");
-    modal.style.display = "block";
+document.getElementById("reset").addEventListener("click", function () {
+  let modal = document.getElementById("resetModal");
+  modal.style.display = "block";
 });
 
-document.getElementById("cancel").addEventListener("click", function(){
+document.getElementById("cancel").addEventListener("click", function () {
   let modal = document.getElementById("resetModal");
   modal.style.display = "none";
 });
@@ -97,138 +311,20 @@ document.getElementById("cancel").addEventListener("click", function(){
 document.getElementById("restart").addEventListener("click", function () {
   let modal = document.getElementById("resetModal");
   modal.style.display = "none";
-  clearBoard();
+  ticTacToe.clearBoard();
 });
 
-function changeTurn() {
-  let turnIndicator = document.getElementById("turn");
-  if (whoseTurn === "x") {
-    whoseTurn = "o";
-    turnIndicator.classList.add("turn_o");
-    turnIndicator.classList.remove("turn_x");
-  } else {
-    whoseTurn = "x";
-    turnIndicator.classList.add("turn_x");
-    turnIndicator.classList.remove("turn_o");
-  }
 
-  if (vsCpu && whoseTurn === cpuSymbol) {
-    setTimeout(skyNetTurn, 500);
-  }
-}
-
-function checkValues(i0, i1, i2) {
-  let counter = { x: 0, o: 0 };
-
-  counter[gameBoard[i0]] += 1;
-  counter[gameBoard[i1]] += 1;
-  counter[gameBoard[i2]] += 1;
-
-  if (counter["x"] === 3) {
-    return "x";
-  } else if (counter["o"] === 3) {
-    return "o";
-  } else if (counter["x"] > 0 && counter["o"] > 0) {
-    return "!";
-  } else if (counter["x"] > 0) {
-    return "x?";
-  } else if (counter["o"] > 0) {
-    return "o?";
-  } else {
-    return "?";
-  }
-}
-
-function checkHorizontalLine(lineNumber) {
-  let startIndex = lineNumber * boardWidth;
-  return checkValues(startIndex, startIndex + 1, startIndex + 2);
-}
-
-function checkVerticalLine(lineNumber) {
-  let startIndex = lineNumber;
-  return checkValues(
-    startIndex,
-    startIndex + boardWidth,
-    startIndex + boardWidth * 2
-  );
-}
-
-function checkLeftDiagonal() {
-  let startIndex = 0;
-  return checkValues(
-    startIndex,
-    startIndex + boardWidth + 1,
-    startIndex + boardWidth * 2 + 2
-  );
-}
-
-function checkRightDiagonal() {
-  let startIndex = 2;
-  return checkValues(
-    startIndex,
-    startIndex + boardWidth - 1,
-    startIndex + boardWidth * 2 - 2
-  );
-}
-
-// bug: +2 score for the human round
-function checkWinner() {
-  let counter = { x: 0, o: 0, "!": 0, "?": 0 };
-  for (let i = 0; i < boardHeight; i++) {
-    let result = checkHorizontalLine(i);
-    counter[result] += 1;
-  }
-
-  for (let i = 0; i < boardWidth; i++) {
-    let result = checkVerticalLine(i);
-    counter[result] += 1;
-  }
-
-  let result = checkLeftDiagonal();
-  counter[result] += 1;
-
-  result = checkRightDiagonal();
-  counter[result] += 1;
-
-  if (counter["x"] > 0) {
-    return "x";
-  }
-
-  if (counter["o"] > 0) {
-    return "o";
-  }
-
-  if (counter["!"] === 8) {
-    return "!";
-  } else {
-    return "?";
-  }
-}
-
-function fillField(fieldIndex, symbol) {
-  gameBoard[fieldIndex] = symbol;
-  let element = boardElements[fieldIndex];
-  // Apply a specific class on click
-  if (symbol === "x") {
-    element.classList.add("clicked_x");
-    element.classList.remove("clicked_o");
-  } else {
-    element.classList.add("clicked_o");
-    element.classList.remove("clicked_x");
-  }
-  let result = checkWinner();
-  if (result === "x" || result === "o" || result === "!") {
-    handleResult(result);
-  }
-}
 // Add an event listener to each <div> element
 for (var i = 0; i < boardElements.length; i++) {
   let index = i;
   boardElements[i].addEventListener("click", function () {
-    if (gameBoard[index] !== "" || isGameOver) {
+    if (ticTacToe.isTheFieldEmpty(index)) {
       return;
     }
-    fillField(index, whoseTurn);
+    ticTacToe.placeCurrentSymbol(index);
+
+    //TODO: wrap the condition into one function
 
     // Get the ID of the clicked <div> element
     var itemId = this.getAttribute("id");
@@ -239,7 +335,7 @@ for (var i = 0; i < boardElements.length; i++) {
       this.setAttribute("id", itemId);
     }
 
-    changeTurn();
+    ticTacToe.changeTurn();
     // Display the ID in the console
     console.log("Clicked item with ID: " + itemId);
   });
@@ -252,34 +348,37 @@ quitButton.addEventListener("click", function () {
   let startScreen = document.getElementById("start_screen");
   let gameScreen = document.getElementById("game_screen");
 
-  startScreen.classList.remove("hidden");
-  gameScreen.classList.add("hidden");
+  // startScreen.classList.remove("hidden");
+  // gameScreen.classList.add("hidden");
+
+  startScreen.style.display = "inherit";
+  gameScreen.style.display = "none";
 
   let modal = document.getElementById("roundOverModal");
   modal.style.display = "none";
 
-  clearBoard();
-  setScore("x", 0);
-  setScore("o", 0);
-  setScore("!", 0);
+  ticTacToe.clearBoard();
+  ticTacToe.setScore("x", 0);
+  ticTacToe.setScore("o", 0);
+  ticTacToe.setScore("!", 0);
 });
 
 nextRoundButton.addEventListener("click", function () {
   let modal = document.getElementById("roundOverModal");
   modal.style.display = "none";
-  if(startingSymbol === "x") {
-    startingSymbol = "o";
+  if (ticTacToe.startingSymbol === "x") {
+    ticTacToe.startingSymbol = "o";
   } else {
-    startingSymbol = "x";
+    ticTacToe.startingSymbol = "x";
   }
-  clearBoard();
-  if (cpuSymbol === startingSymbol) {
-    skyNetTurn();
+  ticTacToe.clearBoard();
+  if (ticTacToe.cpuSymbol === ticTacToe.startingSymbol) {
+    ticTacToe.skyNetTurn();
   }
 });
 
 function handleResult(result) {
-  isGameOver = true;
+  ticTacToe.isGameOver = true;
   console.log(result + " wins!");
 
   let modal = document.getElementById("roundOverModal");
@@ -290,119 +389,20 @@ function handleResult(result) {
   let roundTied = document.getElementById("round_tied");
 
   if (result === "x") {
-    setScore("x", xScore + 1);
+    ticTacToe.setScore("x", ticTacToe.xScore + 1);
     xWinsMessage.style.display = "block";
     oWinsMessage.style.display = "none";
     roundTied.style.display = "none";
   } else if (result === "o") {
-  setScore("o", oScore + 1);
+    ticTacToe.setScore("o", ticTacToe.oScore + 1);
     xWinsMessage.style.display = "none";
     oWinsMessage.style.display = "block";
     roundTied.style.display = "none";
   } else if (result === "!") {
-    setScore("!", ties + 1);
+    ticTacToe.setScore("!", ticTacToe.ties + 1);
     xWinsMessage.style.display = "none";
     oWinsMessage.style.display = "none";
     roundTied.style.display = "block";
   }
 }
 
-function getLines() {
-  let lines = new Array();
-  for (let i = 0; i < boardHeight; i++) {
-    let startIndex = i * boardWidth;
-    lines.push([startIndex, startIndex + 1, startIndex + 2]);
-  }
-
-  for (let i = 0; i < boardWidth; i++) {
-    let startIndex = i;
-    lines.push([
-      startIndex,
-      startIndex + boardWidth,
-      startIndex + boardWidth * 2,
-    ]);
-  }
-
-  let startIndex = 0;
-  lines.push([
-    startIndex,
-    startIndex + boardWidth + 1,
-    startIndex + boardWidth * 2 + 2,
-  ]);
-
-  startIndex = 2;
-  lines.push([
-    startIndex,
-    startIndex + boardWidth - 1,
-    startIndex + boardWidth * 2 - 2,
-  ]);
-
-  const shuffledLines = lines.sort((_a, _b) => 0.5 - Math.random());
-
-  return shuffledLines;
-}
-
-function findEmpty(indeces) {
-  for (let i = 0; i < indeces.length; i++) {
-    let index = indeces[i];
-    if (gameBoard[index] === "") {
-      return index;
-    }
-  }
-  return -1;
-}
-
-function countSymbols(indeces, symbol) {
-  let howManySymbols = 0;
-  for (let i = 0; i < indeces.length; i++) {
-    let index = indeces[i];
-    if (gameBoard[index] === symbol) {
-      howManySymbols = howManySymbols + 1;
-    }
-  }
-  return howManySymbols;
-}
-
-function skyNetTurn() {
-  if (isGameOver) {
-    return;
-  }
-
-  let selectedIndex = -1;
-
-  let lines = getLines();
-
-  for (const line of lines) {
-    let result = countSymbols(line, playerSymbol);
-    if (result === 2) {
-      selectedIndex = findEmpty(line);
-      break;
-    }
-  }
-
-  if (selectedIndex === -1) {
-    for (const line of lines) {
-      let result = checkValues(line[0], line[1], line[2]);
-      if (result === "?" || result === cpuSymbol + "?") {
-        selectedIndex = findEmpty(line);
-        break;
-      }
-    }
-  }
-
-  if (selectedIndex === -1) {
-    for (let i = 0; i < boardWidth * boardHeight; i++) {
-      if (gameBoard[i] === "") {
-        selectedIndex = i;
-        break;
-      }
-    }
-  }
-
-  if (selectedIndex === -1) {
-    return;
-  }
-
-  fillField(selectedIndex, cpuSymbol);
-  changeTurn();
-}
