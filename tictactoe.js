@@ -55,15 +55,11 @@ export class TicTacToe {
   }
 
   changeTurn() {
-    let turnIndicator = document.getElementById("turn");
+    this.userInterface.changeTurn(this.whoseTurn);
     if (this.whoseTurn === "x") {
       this.whoseTurn = "o";
-      turnIndicator.classList.add("turn_o");
-      turnIndicator.classList.remove("turn_x");
-    } else {
+      } else {
       this.whoseTurn = "x";
-      turnIndicator.classList.add("turn_x");
-      turnIndicator.classList.remove("turn_o");
     }
 
     if (this.vsCpu && this.whoseTurn === this.cpuSymbol) {
@@ -198,22 +194,18 @@ export class TicTacToe {
   }
 
   incrementScore(symbol) {
-    let span;
     let value = 0;
     if (symbol === "x") {
-      span = document.getElementById("x_score");
       this.xScore++;
       value = this.xScore;
     } else if (symbol === "o") {
-      span = document.getElementById("o_score");
       this.oScore++;
       value = this.oScore;
     } else {
-      span = document.getElementById("ties");
       this.ties++;
       value = this.ties;
     }
-    span.innerHTML = value;
+    this.userInterface.updateScore(symbol, value);
   }
 
   skyNetTurn() {

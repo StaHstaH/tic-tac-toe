@@ -1,11 +1,6 @@
 import { TicTacToe } from "./tictactoe.js";
 import { UserInterface } from "./userinterface.js";
 
-let board = document.getElementById("board");
-let boardElements = board.getElementsByTagName("div");
-
-
-
 function addClickListener(elementId, callback) {
   document.getElementById(elementId).addEventListener("click", callback);
 }
@@ -13,6 +8,8 @@ function addClickListener(elementId, callback) {
 let userInterface = new UserInterface();
 let ticTacToe = new TicTacToe(userInterface);
 ticTacToe.clearBoard();
+
+userInterface.addBoardElementsHandlers(ticTacToe);
 
 addClickListener("select_player_x", function () {
   ticTacToe.setPlayerSymbol("x");
@@ -23,13 +20,19 @@ addClickListener("select_player_o", function () {
 });
 
 addClickListener("new_game_cpu", function () {
-  startNewGame();
+  userInterface.startNewGame();
   ticTacToe.enableAiPlayer(true);
+  if (ticTacToe.cpuSymbol === ticTacToe.startingSymbol) {
+    ticTacToe.skyNetTurn();
+  }
 });
 
 addClickListener("new_game_human", function () {
-  startNewGame();
+  userInterface.startNewGame();
   ticTacToe.enableAiPlayer(false);
+  if (ticTacToe.cpuSymbol === ticTacToe.startingSymbol) {
+    ticTacToe.skyNetTurn();
+  }
 });
 
 addClickListener("reset", function () {
@@ -76,31 +79,3 @@ addClickListener("next_button", function () {
   }
 });
 
-function startNewGame() {
-  let startScreen = document.getElementById("start_screen");
-  let gameScreen = document.getElementById("game_screen");
-
-  startScreen.style.display = "none";
-  gameScreen.style.display = "unset";
-
-  if (ticTacToe.isCpuStarting()) {
-    ticTacToe.skyNetTurn();
-  }
-}
-
-// Add an event listener to each <div> element
-for (var i = 0; i < boardElements.length; i++) {
-  let index = i;
-  boardElements[i].addEventListener("click", function () {
-    ticTacToe.placeCurrentSymbol(index);
-    // Get the ID of the clicked <div> element
-    var itemId = this.getAttribute("id");
-    // If the <li> element doesn't have an ID, create one
-    if (!itemId) {
-      itemId = "item" + (index + 1);
-      this.setAttribute("id", itemId);
-    }
-    // Display the ID in the console
-    console.log("Clicked item with ID: " + itemId);
-  });
-}
