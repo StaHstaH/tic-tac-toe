@@ -9,6 +9,8 @@ let userInterface = new UserInterface();
 let ticTacToe = new TicTacToe(userInterface);
 ticTacToe.clearBoard();
 
+ticTacToe.restoreState();
+
 userInterface.addBoardElementsHandlers(ticTacToe);
 
 addClickListener("select_player_x", function () {
@@ -20,19 +22,11 @@ addClickListener("select_player_o", function () {
 });
 
 addClickListener("new_game_cpu", function () {
-  userInterface.startNewGame();
-  ticTacToe.enableAiPlayer(true);
-  if (ticTacToe.cpuSymbol === ticTacToe.startingSymbol) {
-    ticTacToe.skyNetTurn();
-  }
+  ticTacToe.startGame(true);
 });
 
 addClickListener("new_game_human", function () {
-  userInterface.startNewGame();
-  ticTacToe.enableAiPlayer(false);
-  if (ticTacToe.cpuSymbol === ticTacToe.startingSymbol) {
-    ticTacToe.skyNetTurn();
-  }
+  ticTacToe.startGame(false);
 });
 
 addClickListener("reset", function () {

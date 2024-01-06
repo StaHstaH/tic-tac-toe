@@ -35,10 +35,14 @@ export class UserInterface {
     if (symbol === "x") {
       element.classList.add("clicked_x");
       element.classList.remove("clicked_o");
-    } else {
+    } else if (symbol === "o") {
       element.classList.add("clicked_o");
       element.classList.remove("clicked_x");
+    } else {
+      element.classList.remove("clicked_x");
+      element.classList.remove("clicked_o");
     }
+    console.log(symbol);
   }
 
   startNewGame() {

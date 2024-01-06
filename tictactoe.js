@@ -8,6 +8,7 @@ export class TicTacToe {
     this.whoseTurn = "x";
     this.startingSymbol = "x";
     this.isGameOver = false;
+    this.isGameStarted = false;
 
     this.playerSymbol = "x";
     this.cpuSymbol = "o";
@@ -18,6 +19,53 @@ export class TicTacToe {
     this.oScore = 0;
 
     this.userInterface = userInterface;
+  }
+
+  saveState() {
+    localStorage.setItem("gameState", JSON.stringify(this));
+  }
+
+  restoreState() {
+    const gameStateString = localStorage.getItem("gameState");
+    if (gameStateString === null) {
+      console.log("No game state restore");
+      return;
+    }
+    const gameState = JSON.parse(gameStateString);
+
+    console.log(gameState);
+    this.gameBoard = gameState.gameBoard;
+
+    this.whoseTurn = gameState.whoseTurn;
+    this.startingSymbol = gameState.startingSymbol;
+    this.isGameOver = gameState.isGameOver;
+    this.isGameStarted = gameState.isGameStarted;
+
+    this.playerSymbol = gameState.playerSymbol;
+    this.cpuSymbol = gameState.cpuSymbol;
+    this.vsCpu = gameState.vsCpu;
+
+    this.xScore = gameState.xScore;
+    this.ties = gameState.ties;
+    this.oScore = gameState.oScore;
+
+    if(this.isGameStarted) {
+      this.userInterface.startNewGame();
+      for (let i = 0; i < this.gameBoard.length; i++) {
+        this.userInterface.placeBoardElement(i, this.gameBoard[i]);
+      }
+
+      this.userInterface.updateScore("x", this.xScore);
+      this.userInterface.updateScore("o", this.oScore);
+      this.userInterface.updateScore("?", this.ties);
+
+      this.userInterface.changeTurn(this.whoseTurn);
+
+      if (this.isGameOver) {
+        let result = this.checkWinner();
+        this.userInterface.handleResult(result);
+      }
+    }
   }
 
   setPlayerSymbol(playerSymbol) {
@@ -33,8 +81,14 @@ export class TicTacToe {
     return this.cpuSymbol === this.startingSymbol;
   }
 
-  enableAiPlayer(vsCpu) {
+  startGame(vsCpu) {
     this.vsCpu = vsCpu;
+    this.isGameStarted = true;
+
+    this.userInterface.startNewGame();
+    if (this.cpuSymbol === this.startingSymbol) {
+      this.skyNetTurn();
+    }
   }
 
   clearBoard() {
@@ -44,21 +98,23 @@ export class TicTacToe {
     this.whoseTurn = this.startingSymbol;
     this.isGameOver = false;
 
-     this.userInterface.clearBoardElements();
-
+    this.userInterface.clearBoardElements();
   }
 
   resetScores() {
     this.xScore = 0;
     this.oScore = 0;
     this.ties = 0;
+    this.isGameStarted = false;
+    this.isGameOver = false;
+    this.saveState();
   }
 
   changeTurn() {
     this.userInterface.changeTurn(this.whoseTurn);
     if (this.whoseTurn === "x") {
       this.whoseTurn = "o";
-      } else {
+    } else {
       this.whoseTurn = "x";
     }
 
@@ -67,6 +123,7 @@ export class TicTacToe {
         this.skyNetTurn();
       }, 500);
     }
+    this.saveState();
   }
 
   checkValues(i0, i1, i2) {
@@ -122,6 +179,7 @@ export class TicTacToe {
     }
     this.fillField(index, this.whoseTurn);
     this.changeTurn();
+
     return true;
   }
 
