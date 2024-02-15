@@ -168,7 +168,7 @@ header {
     display: block;
     width: 8.75rem;
     height: 8.75rem;
-    background-color: #1F3641;
+    background-color: var(--semidarknavy);
 }
 
 footer {
@@ -183,7 +183,7 @@ footer div {
     width: 8.75rem;
     height: 2rem;
     text-align: center;
-    background-color: #1F3641;
+    background-color: var(--semidarknavy);
 }
 
 
